@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.6.10.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            Name:
+            <input type="text" v-model="name" form-inline />
+            <a href="" v-on:click.prevent='Add'>添加</a>
+        </div>
+
+        <table class="table table-hover" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Time</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in list" :key="item.id">
+                    <th>{{item.id}}</th>
+                    <th v-text='item.name'></th>
+                    <th>{{item.time}}</th>
+                    <th><a href="" @click.pervent='del'>删除</a></th>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</body>
+<script>
+    Vue.http.options.root = 'http://vue.studyit.io/'
+    Vue.http.options.emulateJSON = true
+    var vm = new Vue({
+        el: "#app",
+        created() {
+            this.queryDataList()
+        },
+        data: {
+            name: '',
+            list: [
+                { id: 1, name: '奔驰', time: new Date() },
+                { id: 2, name: '宝马', time: new Date() }
+            ]
+        },
+        methods: {
+            // 添加品牌到列表
+            Add() {
+                this.$http.post('api/addproduct', { name: this.name }).then(res => {
+                    if (res.body.status === 0) {
+                        this.queryDataList()
+                    } else {
+                        alert('添加失败！')
+                    }
+                })
+            },
+            // 获取列表数据
+            queryDataList() {
+                this.$http.get('api/getprodlist', { emulateJSON: true }).then(res => {
+                    if (res.body.status === 0) {
+                        this.list = res.body.message
+                    } else {
+                        alert('获取数据失败！')
+                    }
+                })
+            },
+            // 删除品牌
+            del(id) {
+                this.$http.get('api/delproduct/' + id).then(res => {
+                    if (res.body.status === 0) {
+                        this.queryDataList()
+                    } else {
+                        alert('删除成功！')
+                    }
+                })
+            },
+            show() {
+                console.log('ok');
+            }
+        }
+    })
+</script>
+</html>
