@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.6.10.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+    </div>
+    <script>
+        // 全局混入
+        /* Vue.mixins({
+        }) */
+        // 局部混入
+        var myMixin = {
+            created: function () {
+                console.log('混入部分的created方法');
+                this.hello()
+            },
+            data: {
+                message: 'hello',
+                foo: 'abc'
+            },
+            methods: {
+                hello: function () {
+                    console.log('hello from mixin!')
+                }
+            }
+        }
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                // 混入部分相同的变量会被主体的替换，不同部分融合
+                message: 'world',
+                bar: 'bfe'
+            },
+            // 相同名字的钩子方法，内容被合并
+            created: function () {
+                console.log('主体部分的created方法');
+                console.log(this.$data);
+
+            },
+            mixins: [myMixin],
+            methods: {
+                // 相同名字的方法，取主体里的方法
+                hello: function () {
+                    console.log('主体部分的hello方法');
+
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
