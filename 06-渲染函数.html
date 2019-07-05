@@ -11,8 +11,60 @@
 <body>
     <div id="app">
         <anchored-heading :level='1'>hello</anchored-heading>
+        <anchored-heading1 :level='1'>hello word</anchored-heading1>
+        <ul v-if='items.length'>
+            <li v-for="(item, index) in items" :key="item">
+                {{item}}
+            </li>
+        </ul>
+        <p v-else>No items found.</p>
+        <vifvfor :items='datas'></vifvfor>
+        <vmodel :value="textcontent" @input='input'></vmodel>
+        {{textcontent}}
     </div>
     <script>
+        // 原生JavaScript中可以完成的操作，Vue渲染函数直接调用，不需要专门页替代方法
+        Vue.component('vifvfor', {
+            props: {
+                items: {
+                    type: Array,
+                    required: true
+                }
+            },
+            render: function (createElement) {
+                if (this.items.length) {
+                    return createElement('ul', this.items.map(function (item) {
+                        return createElement('li', item)
+                    }))
+                } else {
+                    return createElement('p', 'No items found.')
+                }
+            }
+        })
+        // 原生JavaScript中没有的需要自己实现相应的逻辑
+        Vue.component('vmodel', {
+            props: {
+                value: {
+                    type: String,
+                    required: true
+                }
+            },
+            render: function (createElement) {
+                let self = this
+                return createElement('input', {
+                    domProps: {
+                        // 从外面传进来的值
+                        value: self.value
+                    },
+                    on: {
+                        // 内部修改后，联动修改外部的值
+                        input: function (event) {
+                            self.$emit('input', event.target.value)
+                        }
+                    }
+                })
+            }
+        })
         Vue.component('anchored-heading', {
             render: function (createElement) {
                 return createElement(
@@ -27,10 +79,46 @@
                 }
             }
         })
+        var getChildrenTextContent = function (children) {
+            return children.map(function (node) {
+                return node.children ? getChildrenTextContent(node.children) : node.text
+            }).join('')
+        }
+        Vue.component('anchored-heading1', {
+            render: function (createElement) {
+                //创建kebab-case风格的ID
+                var headingId = getChildrenTextContent(this.$slots.default).toLowerCase().replace(/\W+/g, '-').replace(/(^-|-$)/g, '')
+
+                return createElement('h' + this.level, [
+                    createElement('a', {
+                        attrs: {
+                            name: headingId,
+                            href: '#' + headingId
+                        }
+                    }, this.$slots.default)
+                ])
+            },
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            }
+        })
         var vm = new Vue({
             el: "#app",
-            data: {},
-            methods: {}
+            data: {
+                items: [
+                    1, 2, 3, 4, 5, 6, 7
+                ],
+                datas: [],
+                textcontent: '测试自己实现的v-model逻辑'
+            },
+            methods: {
+                input(data) {
+                    this.textcontent = data
+                }
+            }
         })
     </script>
 </body>
