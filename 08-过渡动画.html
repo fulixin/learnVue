@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.6.10.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <button @click='flag=!flag'>tag</button>
+        <transition name="fade">
+            <p v-if="flag">tag-transition</p>
+        </transition>
+        <transition name="bounce">
+            <p v-if='flag'>tag-animation</p>
+        </transition>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                flag: false
+            },
+            methods: {}
+        })
+    </script>
+    <style>
+        /* css过渡 */
+        /* 设置进入动画 */
+        .fade-enter-active {
+            transition: all .3s ease
+        }
+
+        /* 设置离开动画 */
+        .fade-leave-active {
+            /* 
+            transition:
+                property 设置过渡效果的css属性名称
+                duration  完成过渡效果需要多少秒
+                timing-function 速度效果的速度曲线
+                delay 过渡效果何时开始（默认立刻生效）*/
+            transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+        }
+
+        /* 定义过渡开始状态 */
+        .fade-enter,
+        /* 定义完成过渡的结束状态 */
+        .fade-leave-to {
+            /* 
+            transform 旋转元素
+            横向（x轴方向）移动距离 */
+            transform: translateX(10px);
+            /* 设置元素的不透明级别,从0.0（完全透明）到1.0（完全不透明l） */
+            opacity: 0;
+        }
+
+        /* css动画 */
+        .bounce-enter-active {
+            /* 
+            animation 元素与动画绑定
+                name 需要绑定到选择器的keyframe名称
+                duration 动画需要的时间
+                timing-function 动画的速度曲线
+                delay 动画开始前的延迟
+                iteration-count 动画播放的次数
+                direction 是否轮流反向播放(normal 默认值，正常播放；alternate 轮流反向播放，从正向开始;reverse 反向播放;alternate-reverse 轮流反向播放，从反向开始)
+             */
+            animation: bounce-in .5s
+        }
+
+        .bounce-leave-active {
+            animation: bounce-in .5s reverse
+        }
+
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0)
+            }
+
+            50% {
+                transform: scale(1.5)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+    </style>
+</body>
+
+</html>
