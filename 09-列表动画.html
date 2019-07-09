@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.6.10.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        编号：<input v-model="code"></input>
+        名称：<input v-model="name"></input>
+        <button @click.parent='add'>add</button>
+        <button @click.parent='shuffle'>shuffle</button>
+        <transition-group name='list' appear tag='ul'>
+            <li v-for="(item, index) in items" :key="item.code" @click='del(index)'>
+                {{item.code}}----{{item.name}}
+            </li>
+        </transition-group>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                name: '',
+                code: '',
+                items: [
+                    { code: '1', name: '小明' },
+                    { code: '2', name: '小李' },
+                    { code: '3', name: '小王' },
+                    { code: '4', name: '小周' }
+                ]
+            },
+            methods: {
+                add() {
+                    if (this.code != '' && this.name != '') {
+                        this.items.push({ code: this.code, name: this.name })
+                        this.code = ''
+                        this.name = ''
+                    }
+                },
+                del(i) {
+                    this.items.splice(i, 1)
+                },
+                shuffle() {
+                    this.items = _.shuffle(this.items) //_.shuffle() 打乱数组，重新排序
+                }
+            }
+        })
+    </script>
+    <style>
+        li {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            display: inline-block;
+            border-style: dashed;
+            border-width: 1px;
+            margin: 2px;
+            padding: 2px;
+        }
+
+        .list-enter-active,
+        .list-leave-active {
+            transition: all 1s
+        }
+
+        .list-enter,
+        .list-leave-to {
+            opacity: 0;
+            transform: translateY(20px)
+        }
+
+        .list-move {
+            transition: transform 1s
+        }
+
+        .list-leave-active {
+            position: absolute
+        }
+    </style>
+</body>
+
+</html>
