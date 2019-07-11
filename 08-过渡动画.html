@@ -28,6 +28,22 @@
         })
     </script>
     <style>
+        /* 初始渲染过渡 
+            appear
+            函数：
+                v-on:before-appear 初始渲染前执行的函数
+                v-on:appear 初始化渲染执行的函数
+                v-on:after-appear 初始化渲染后执行的函数
+                v-on:appear-cancelled 初始化渲染取消执行的函数
+        */
+        /* 多个元素过渡
+            使用v-if/v-else切换标签，最好每个标签添加key，可以更好的实践
+        */
+        /* 过渡模式
+            进入和离开的过渡效果同时生效的时候，体验不友好，所以通过过渡模式设置先执行哪个效果
+            in-out：先执行进入过渡，后执行离开过渡
+            out-in：先执行离开过渡，后执行进入过渡
+         */
         /* css过渡 */
         /* 设置进入动画 */
         .fade-enter-active {
