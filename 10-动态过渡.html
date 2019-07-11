@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.6.10.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        Fade in:<input type="range" v-model="fadeInDuration" min='0' :max="maxDuration"></input>
+        Fade out:<input type="range" v-model="fadeOutDuration" min='0' :max="maxDuration"></input>
+        <transition v-bind:class='false' @before-enter="beforeEnter" @enter="enter" @leave="leave">
+            <p v-if='show'>{{text}}</p>
+        </transition>
+        <button v-if='stop' @click='stop=false;show=false'>Start animating</button>
+        <button v-else @click='stop=true'>Stop it</button>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                fadeInDuration: 1000,
+                fadeOutDuration: 1000,
+                maxDuration: 1500,
+                text: 'hello',
+                show: true,// 是否显示text
+                stop: false// 是否停止显示隐藏事件
+            },
+            mounted() {
+                this.show = false
+            },
+            methods: {
+                beforeEnter(el) {
+                    el.style.opacity = 0
+                },
+                enter(el, done) {
+                    let vm = this
+                    Velocity(el, { opacity: 1 }, {
+                        duration: this.fadeInDuration,
+                        complete: function () {
+                            done()
+                            if (!vm.stop) {
+                                vm.show = false
+                            }
+                        }
+                    })
+                },
+                leave(el, done) {
+                    let vm = this
+                    Velocity(el, { opacity: 1 }, {
+                        duration: this.fadeOutDuration,
+                        complete: function () {
+                            done()
+                            vm.show = true
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
